@@ -6,6 +6,13 @@ VERSION_FILE := $(dir $(MKFILE_PATH))/VERSION
 VERSION := $(shell sed 's/^ *//;s/ *$$//' $(VERSION_FILE))
 LOG_PREFIX = '${APP_NAME} | ${MIX_ENV}:'
 
+GIT_HASH := $(shell git rev-parse --short HEAD)
+IMAGE := $(APP_NAME):$(VERSION)-$(GIT_HASH)
+LATEST := $(APP_NAME):latest
+HUBTAG_VERSION := zsolt001/$(APP_NAME):$(VERSION)
+HUBTAG_UNIQUE := zsolt001/$(IMAGE)
+HUBTAG_LATEST := zsolt001/$(LATEST)
+
 dev: export MIX_ENV = dev
 dev: compile
 	@echo MAKE DONE: $@
@@ -41,16 +48,22 @@ release: prod
 	@mix release --env=prod
 	@echo MAKE DONE: $@
 
-publish: test docs prod
-	@echo ${LOG_PREFIX} tagging with current version: $(VERSION)
-	@git tag -a "v$(VERSION)" -m "version $(VERSION)"
-	@echo ${LOG_PREFIX} pushing repository to origin
-	@git push 
-	@echo ${LOG_PREFIX} pushing tag to origin
-	@git push origin "v$(VERSION)"
-	@echo ${LOG_PREFIX} publishing version $(VERSION) to hex
-	@mix hex.publish
-	@echo MAKE DONE: $@
+docker.build: git-status-test
+	@echo ${LOG_PREFIX} building image $(IMAGE)
+	@docker build -t $(IMAGE) -f Dockerfile.x86
+	@docker tag $(IMAGE) $(LATEST)
+	@echo $(LOG_PREFIX) $@ DONE
+
+docker.publish: docker.build
+	@echo ${LOG_PREFIX} tagging with $(HUBTAG_VERSION)
+	@docker tag $(IMAGE) $(HUBTAG_UNIQUE)
+	@docker tag $(IMAGE) $(HUBTAG_VERSION)
+	@docker tag $(IMAGE) $(HUBTAG_LATEST)
+	@echo ${LOG_PREFIX} pushing to Docker Hub
+	docker push $(HUBTAG_UNIQUE)
+	docker push $(HUBTAG_VERSION)
+	docker push $(HUBTAG_LATEST)
+	@echo $(LOG_PREFIX) $@ DONE
 
 docs: git-status-test
 	@echo ${LOG_PREFIX} updating documentation
