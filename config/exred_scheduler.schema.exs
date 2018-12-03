@@ -50,6 +50,25 @@
       hidden: false,
       env_var: "EXRED_DB_PORT",
       to: "exred_library.psql_conn.port"
+    ],
+    "exred_scheduler.exred_ui_hostname": [
+      commented: false,
+      datatype: :binary,
+      default: "localhost",
+      doc:
+        "Hostname where the exred_ui application is running (needed to access Phoenix channels)",
+      hidden: false,
+      env_var: "EXRED_UI_HOSTNAME",
+      to: "exred_scheduler.exred_ui_hostname"
+    ],
+    "exred_scheduler.exred_ui_port": [
+      commented: false,
+      datatype: :integer,
+      default: 4000,
+      doc: "Port where the exred_ui application is running (needed to access Phoenix channels)",
+      hidden: false,
+      env_var: "EXRED_UI_PORT",
+      to: "exred_scheduler.exred_ui_port"
     ]
   ],
   transforms: [],

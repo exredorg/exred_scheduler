@@ -9,11 +9,17 @@ defmodule Exred.Scheduler.PhxSocketClient do
   ######################################
 
   def start_link(_args) do
-    # TODO: socket URL needs to come from config (also add it to prod config)
+    # socket URL needs to come from config
+    exred_ui_hostname = Application.get_env(:exred_scheduler, :exred_ui_hostname)
+    exred_ui_port = Application.get_env(:exred_scheduler, :exred_ui_port)
+    socket_url = "ws://#{exred_ui_hostname}:#{exred_ui_port}/socket/websocket"
+
+    Logger.info("connecting to #{socket_url}")
+
     GenSocketClient.start_link(
       __MODULE__,
       Phoenix.Channels.GenSocketClient.Transport.WebSocketClient,
-      "ws://localhost:4000/socket/websocket",
+      socket_url,
       [],
       name: __MODULE__
     )

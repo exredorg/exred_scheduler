@@ -1,7 +1,6 @@
 # Build container
 #################################
-FROM elixir:1.7.4-alpine as builder
-
+FROM elixir:1.7 as builder
 
 WORKDIR /
 COPY . exred_scheduler
@@ -10,35 +9,30 @@ WORKDIR /exred_scheduler
 
 ENV MIX_ENV=prod
 
-# This step installs all the build tools we'll need
-RUN apk update && \
-  apk upgrade --no-cache && \
-  apk add --no-cache \
-  build-base && \
-  mix local.rebar --force && \
-  mix local.hex --force
-
-RUN mix do deps.get, deps.compile, compile
+RUN mix local.hex --force
+RUN mix local.rebar --force
+RUN mix do deps.get, deps.compile
+RUN mix compile
 RUN mix release --env=prod --verbose
 
 
 # Final image
 #################################
-FROM alpine:3.8
+FROM elixir:1.7
 
-ARG VERSION
-
-RUN apk update && \
-  apk add --no-cache \
-  bash \
-  openssl-dev \
-  postgresql-client
+ARG VERSION=0.1.5
 
 ENV MIX_ENV=prod \
-  REPLACE_OS_VARS=true 
+    REPLACE_OS_VARS=true \
+    SHELL=/bin/bash
 
 COPY docker/assets/wait-for-it.sh /usr/local/bin/
 COPY docker/assets/wait-for-postgres.sh /usr/local/bin/
+
+RUN apt-get update && \ 
+    apt-get install -y --no-install-recommends\
+    postgresql-client && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY --from=builder /exred_scheduler/_build/prod/rel/exred_scheduler/releases/${VERSION}/exred_scheduler.tar.gz .

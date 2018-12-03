@@ -41,3 +41,6 @@ config :grpc, start_server: true
 config :logger, :console,
   format: "[$level] $metadata$message\n",
   metadata: [:module, :function]
+
+config :exred_scheduler, :exred_ui_hostname, "localhost"
+config :exred_scheduler, :exred_ui_port, 4000

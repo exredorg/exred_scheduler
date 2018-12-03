@@ -1,10 +1,12 @@
 defmodule Exred.Scheduler.Mixfile do
   use Mix.Project
 
+  @version File.read!("VERSION") |> String.trim()
+
   def project do
     [
       app: :exred_scheduler,
-      version: "0.1.1",
+      version: @version,
       build_path: "./_build",
       config_path: "./config/config.exs",
       deps_path: "./deps",

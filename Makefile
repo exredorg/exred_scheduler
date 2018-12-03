@@ -1,10 +1,12 @@
 .PHONY: dev prod cleandev cleanprod compile release publish docs test run
 
 MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+APP_DIR := $(dir $(MKFILE_PATH))
 APP_NAME := $(notdir $(patsubst %/,%,$(dir $(MKFILE_PATH))))
 VERSION_FILE := $(dir $(MKFILE_PATH))/VERSION
 VERSION := $(shell sed 's/^ *//;s/ *$$//' $(VERSION_FILE))
-LOG_PREFIX = '${APP_NAME} | ${MIX_ENV}:'
+
+LOG_PREFIX = '>>> MAKE >>> ${APP_NAME} | ${MIX_ENV}:'
 
 GIT_HASH := $(shell git rev-parse --short HEAD)
 IMAGE := $(APP_NAME):$(VERSION)-$(GIT_HASH)
@@ -48,9 +50,9 @@ release: prod
 	@mix release --env=prod
 	@echo MAKE DONE: $@
 
-docker.build: git-status-test
-	@echo ${LOG_PREFIX} building image $(IMAGE)
-	@docker build -t $(IMAGE) -f Dockerfile.x86
+docker.build: #git-status-test
+	@echo ${LOG_PREFIX} building image $(IMAGE) with context $(APP_DIR)
+	@docker build -t $(IMAGE) -f $(APP_DIR)/docker/Dockerfile.x86 $(APP_DIR) --build-arg VERSION=$(VERSION)
 	@docker tag $(IMAGE) $(LATEST)
 	@echo $(LOG_PREFIX) $@ DONE
 
