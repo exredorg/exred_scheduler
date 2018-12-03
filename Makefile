@@ -58,7 +58,7 @@ docker.build: #git-status-test
 
 docker.publish: docker.build
 	@echo ${LOG_PREFIX} tagging git repo with current version: $(VERSION)
-	@git tag -a "v$(VERSION)" -m "version $(VERSION)" || echo "WARNING git tag for this version already exists" 
+	@git tag -a "v$(VERSION)" -m "version $(VERSION)" || echo "${LOG_PREFIX} WARNING git tag for this version already exists" 
 	@echo ${LOG_PREFIX} pushing repository to origin
 	@git push 
 	@echo ${LOG_PREFIX} pushing git tag to origin
