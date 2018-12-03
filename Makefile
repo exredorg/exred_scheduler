@@ -57,11 +57,17 @@ docker.build: #git-status-test
 	@echo $(LOG_PREFIX) $@ DONE
 
 docker.publish: docker.build
-	@echo ${LOG_PREFIX} tagging with $(HUBTAG_VERSION)
+	@echo ${LOG_PREFIX} tagging git repo with current version: $(VERSION)
+	@git tag -a "v$(VERSION)" -m "version $(VERSION)"
+	@echo ${LOG_PREFIX} pushing repository to origin
+	@git push 
+	@echo ${LOG_PREFIX} pushing git tag to origin
+	@git push origin "v$(VERSION)"
+	@echo ${LOG_PREFIX} tagging docker image with $(HUBTAG_VERSION)
 	@docker tag $(IMAGE) $(HUBTAG_UNIQUE)
 	@docker tag $(IMAGE) $(HUBTAG_VERSION)
 	@docker tag $(IMAGE) $(HUBTAG_LATEST)
-	@echo ${LOG_PREFIX} pushing to Docker Hub
+	@echo ${LOG_PREFIX} publishing to Docker Hub
 	docker push $(HUBTAG_UNIQUE)
 	docker push $(HUBTAG_VERSION)
 	docker push $(HUBTAG_LATEST)
@@ -84,4 +90,3 @@ git-status-test:
 	@test -z "$(shell git status -s 2>&1)" \
           && echo "Git repo is clean" \
           || (echo "Failed: uncommitted changes in git repo" && exit 1)
-
