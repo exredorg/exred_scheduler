@@ -14,8 +14,7 @@ ENV MIX_ENV=prod
 RUN apk update && \
   apk upgrade --no-cache && \
   apk add --no-cache \
-  build-base && \
-  linux-headers && \
+  build-base linux-headers && \
   mix local.rebar --force && \
   mix local.hex --force
 
