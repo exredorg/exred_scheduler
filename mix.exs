@@ -86,7 +86,7 @@ defmodule Exred.Scheduler.Mixfile do
       {:exred_node_shell, "~> 0.1.0"},
       {:exred_node_picar, "~> 0.1.0"},
       {:exred_node_function, "~> 0.1.0"},
-      {:exred_node_grpc_server, "~> 0.1.2-alpha2"},
+      {:exred_node_grpc_server, "~> 0.1.0"},
       {:exred_node_grpc_twin, "~> 0.1.0"}
     ]
   end
