@@ -29,6 +29,13 @@ use Mix.Config
 #
 #     import_config "#{Mix.env}.exs
 
+config :exred_scheduler, :exred_ui_hostname, "localhost"
+config :exred_scheduler, :exred_ui_port, 4000
+
+config :logger, :console,
+  format: "[$level] $metadata$message\n",
+  metadata: [:module, :function]
+
 config :exred_library, :psql_conn,
   username: "exred_user",
   password: "hello",
@@ -38,9 +45,7 @@ config :exred_library, :psql_conn,
 
 config :grpc, start_server: true
 
-config :logger, :console,
-  format: "[$level] $metadata$message\n",
-  metadata: [:module, :function]
-
-config :exred_scheduler, :exred_ui_hostname, "localhost"
-config :exred_scheduler, :exred_ui_port, 4000
+config :exred_node_aws_iot_daemon, :ssl,
+  keyfile: "~/exred_data/private.pem.key",
+  certfile: "~/exred_data/certificate.pem.crt",
+  cacertfile: "~/exred_data/ca_root.pem"
