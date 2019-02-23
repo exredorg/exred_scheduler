@@ -81,11 +81,8 @@ defmodule Exred.Scheduler.DeployManager do
     |> Enum.each(fn %Node{} = node ->
       Logger.info("STARTING NODE INSTANCE: #{node.name}")
 
-      if node.category == "daemon" do
-        # start the daemon childs
-        node.module.daemon_child_specs(node.config)
-        |> Enum.each(&start_daemon_process/1)
-      end
+      node.module.daemon_child_specs(node.config)
+      |> Enum.each(&start_daemon_process/1)
 
       start_args = [node.id, node.config, &Exred.Scheduler.EventChannel.send/2]
       child_spec = Supervisor.child_spec({node.module, start_args}, id: node.id)
