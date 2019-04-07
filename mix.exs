@@ -29,6 +29,7 @@ defmodule Exred.Scheduler.Mixfile do
   defp deps do
     [
       {:phoenix_gen_socket_client, "~> 2.1.1"},
+      {:ecto, "~>2.2.9"},
       {:websocket_client, "~> 1.2"},
       {:poison, "~> 2.0"},
       {:ex_doc, "~> 0.19.0", only: :dev, runtime: false},
@@ -39,7 +40,8 @@ defmodule Exred.Scheduler.Mixfile do
 
   defp nodes(:dev) do
     [
-      {:exred_library, git: "https://github.com/exredorg/exred_library.git"},
+      # {:exred_library, git: "https://github.com/exredorg/exred_library.git"},
+      {:exred_library, path: "../../exred_library"},
       {:exred_node_aws_iot_daemon,
        git: "https://github.com/exredorg/exred_node_aws_iot_daemon.git"},
       {:exred_node_aws_iot_thingshadow_in,
@@ -80,9 +82,9 @@ defmodule Exred.Scheduler.Mixfile do
       {:exred_node_rpiphoto, "~> 0.2.0"},
       {:exred_node_shell, "~> 0.2.0"},
       {:exred_node_picar, "~> 0.2.0"},
-      {:exred_node_function, "~> 0.2.0"},
-      {:exred_node_grpc_server, "~> 0.1.0"},
-      {:exred_node_grpc_twin, "~> 0.1.0"}
+      {:exred_node_function, "~> 0.2.0"}
+      # {:exred_node_grpc_server, "~> 0.1.0"},
+      # {:exred_node_grpc_twin, "~> 0.1.0"}
     ]
   end
 end

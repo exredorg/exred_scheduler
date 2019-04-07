@@ -69,7 +69,17 @@ defmodule Exred.Scheduler.DeployManager do
   get nodes from library and start instances
   """
   defp start_node_processes do
-    nodes = Library.get_all_nodes()
+    nodes =
+      Library.get_all_nodes()
+      |> Enum.map(fn n ->
+        %{
+          n
+          | id: n.id |> Ecto.UUID.cast!() |> String.to_atom(),
+            module: n.module |> String.to_existing_atom(),
+            config: n.config |> Exred.Library.Utils.convert_to_atom_map(),
+            flow_id: n.flow_id |> Ecto.UUID.cast!() |> String.to_atom()
+        }
+      end)
 
     ## sort nodes; put daemon nodes first
     sorted_nodes =
@@ -99,18 +109,24 @@ defmodule Exred.Scheduler.DeployManager do
     get connections from library and set them up on the nodes
   """
   defp set_up_connections do
-    connections = Library.get_all_connections()
-
-    Enum.each(connections, fn %Connection{} = conn ->
-      # can't call the node module's API to add a new connection because
-      # we don't know what module it is
-      # so we just call directly with GenServer
-      # (source_id matches the node process's registered name)
-      GenServer.call(conn.source_id, {:add_out_node, conn.target_id})
-      Logger.info("ADDED CONNECTION: #{conn.source_id} -> #{conn.target_id}")
+    Library.get_all_connections()
+    # convert id fields to atoms
+    |> Enum.map(fn c ->
+      %{
+        c
+        | id: c.id |> Ecto.UUID.cast!() |> String.to_atom(),
+          source_id: c.source_id |> Ecto.UUID.cast!() |> String.to_atom(),
+          target_id: c.target_id |> Ecto.UUID.cast!() |> String.to_atom(),
+          flow_id: c.flow_id |> Ecto.UUID.cast!() |> String.to_atom()
+      }
+    end)
+    # add connnections to node processes
+    |> Enum.each(fn c ->
+      GenServer.call(c.source_id, {:add_out_node, c.target_id})
+      Logger.info("ADDED CONNECTION: #{c.source_id} -> #{c.target_id}")
     end)
 
-    Logger.info("Set up connections")
+    Logger.info("Done setting up connections")
   end
 
   def start_daemon_process(child_spec) do

@@ -36,16 +36,16 @@ config :logger, :console,
   format: "[$level] $metadata$message\n",
   metadata: [:module, :function]
 
-config :exred_library, :psql_conn,
-  username: "exred_user",
-  password: "hello",
-  database: "exred_ui_dev",
-  hostname: "localhost",
-  port: 5432
-
 config :grpc, start_server: true
 
 config :exred_node_aws_iot_daemon, :ssl,
   keyfile: "~/exred_data/private.pem.key",
   certfile: "~/exred_data/certificate.pem.crt",
   cacertfile: "~/exred_data/ca_root.pem"
+
+config :exred_library,
+  ecto_repos: [Exred.Library.SqliteRepo]
+
+config :exred_library, Exred.Library.SqliteRepo,
+  adapter: Sqlite.Ecto2,
+  database: "/tmp/exred.sqlite3"
