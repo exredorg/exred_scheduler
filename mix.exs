@@ -67,7 +67,7 @@ defmodule Exred.Scheduler.Mixfile do
 
   defp nodes(_) do
     [
-      {:exred_library, "~> 0.1"},
+      {:exred_library, github: "exredorg/exred_library", branch: "use-sqlite"},
       {:exred_node_aws_iot_daemon, "~> 0.2.0"},
       {:exred_node_aws_iot_thingshadow_in, "~> 0.2.0"},
       {:exred_node_aws_iot_thingshadow_out, "~> 0.2.0"},
