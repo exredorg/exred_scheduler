@@ -73,7 +73,7 @@ defmodule Exred.Scheduler.Mixfile do
       {:exred_node_aws_iot_thingshadow_out, "~> 0.2.0"},
       {:exred_node_debug, "~> 0.2.0"},
       {:exred_node_gpio_in, "~> 0.2.0"},
-      {:exred_node_gpio_out, "~> 0.2.0"},
+      {:exred_node_gpio_out, "~> 0.2.1"},
       {:exred_node_redis_daemon, "~> 0.2.0"},
       {:exred_node_redis_in, "~> 0.2.0"},
       {:exred_node_redis_out, "~> 0.2.0"},
